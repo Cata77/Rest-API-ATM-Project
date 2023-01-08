@@ -1,5 +1,6 @@
 package com.restapi.atm.service;
 
+import com.restapi.atm.exception.LowBalanceException;
 import com.restapi.atm.exception.UserAlreadyExistsException;
 import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
@@ -64,6 +65,23 @@ public class UserServiceImpl implements UserService{
         Transaction transaction = createTransaction(amount, TransactionType.DEPOSIT);
         bankUserAccount.getTransactions().add(transaction);
         bankUserAccount.setBalance(bankUserAccount.getBalance().add(amount));
+        accountRepository.save(bankUserAccount);
+
+        return transaction;
+    }
+
+    @Override
+    @Transactional
+    public Transaction createWithdrawTransaction(Integer id, BigDecimal amount) {
+        Account bankUserAccount = accountRepository.findAccountByBankUserId(id)
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_MESSAGE));
+
+        if (amount.compareTo(bankUserAccount.getBalance()) > 0)
+            throw new LowBalanceException("Insufficient funds!");
+
+        Transaction transaction = createTransaction(amount, TransactionType.WITHDRAW);
+        bankUserAccount.getTransactions().add(transaction);
+        bankUserAccount.setBalance(bankUserAccount.getBalance().subtract(amount));
         accountRepository.save(bankUserAccount);
 
         return transaction;

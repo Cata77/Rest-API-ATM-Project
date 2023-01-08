@@ -44,4 +44,14 @@ public class UserController {
         return new ResponseEntity<>(basicTransactionDto, HttpStatus.CREATED);
     }
 
+    @PatchMapping("/user/withdraw")
+    public ResponseEntity<BasicTransactionDto> createUserWithdraw(
+            @RequestParam String id,
+            @RequestParam String amount) {
+        Transaction transaction = userService.createWithdrawTransaction(Integer.parseInt(id),new BigDecimal(amount));
+
+        BasicTransactionDto basicTransactionDto = modelMapper.map(transaction, BasicTransactionDto.class);
+
+        return new ResponseEntity<>(basicTransactionDto, HttpStatus.CREATED);
+    }
 }
