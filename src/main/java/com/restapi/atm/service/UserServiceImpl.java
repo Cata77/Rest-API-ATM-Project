@@ -38,4 +38,10 @@ public class UserServiceImpl implements UserService{
                 .findFirst()
                 .orElseThrow(() -> new UserNotFoundException("Bad credentials!"));
     }
+
+    @Override
+    public Account getUserDetails(Integer id) {
+        return accountRepository.findAccountByBankUserId(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
 }
