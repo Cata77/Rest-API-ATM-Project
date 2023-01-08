@@ -1,15 +1,17 @@
 package com.restapi.atm.controller;
 
 import com.restapi.atm.dto.AccountDto;
+import com.restapi.atm.dto.BasicTransactionDto;
 import com.restapi.atm.model.Account;
+import com.restapi.atm.model.Transaction;
 import com.restapi.atm.service.UserServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 public class UserController {
@@ -31,5 +33,15 @@ public class UserController {
         return new ResponseEntity<>(accountDto, HttpStatus.OK);
     }
 
+    @PatchMapping("/user/deposit")
+    public ResponseEntity<BasicTransactionDto> createUserDeposit(
+            @RequestParam String id,
+            @RequestParam String amount) {
+        Transaction transaction = userService.createDepositTransaction(Integer.parseInt(id),new BigDecimal(amount));
+
+        BasicTransactionDto basicTransactionDto = modelMapper.map(transaction, BasicTransactionDto.class);
+
+        return new ResponseEntity<>(basicTransactionDto, HttpStatus.CREATED);
+    }
 
 }
