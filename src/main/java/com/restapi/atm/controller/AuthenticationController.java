@@ -30,4 +30,13 @@ public class AuthenticationController {
 
         return new ResponseEntity<>(bankUserDto,HttpStatus.CREATED);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<BankUserDto> loginUser(@RequestBody BankUser bankUser) {
+        BankUser loggedBankUser = userService.loginUser(bankUser);
+
+        BankUserDto bankUserDto = modelMapper.map(loggedBankUser, BankUserDto.class);
+
+        return new ResponseEntity<>(bankUserDto,HttpStatus.OK);
+    }
 }

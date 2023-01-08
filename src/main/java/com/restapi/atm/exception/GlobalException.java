@@ -15,4 +15,9 @@ public class GlobalException {
     public ResponseEntity<Object> handlerUserAlreadyExists(UserAlreadyExistsException exception, WebRequest request) {
         return new ResponseEntity<>(new ApiError(exception.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Object> handlerUserNotFound(UserNotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(new ApiError(exception.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()), HttpStatus.NOT_FOUND);
+    }
 }
