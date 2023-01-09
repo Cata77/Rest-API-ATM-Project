@@ -12,4 +12,5 @@ public interface UserService {
     Account getUserDetails(Integer id);
     Transaction createDepositTransaction(Integer id, BigDecimal amount);
     Transaction createWithdrawTransaction(Integer id, BigDecimal amount);
+    Transaction createTransferTransaction(Integer id1, Integer id2, BigDecimal amount);
 }

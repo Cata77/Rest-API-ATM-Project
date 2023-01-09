@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService{
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
     private static final String NOT_FOUND_MESSAGE = "User not found!";
+    private static final String BENEFICIARY_NOT_FOUND_MESSAGE = "Beneficiary user not found!";
 
     public UserServiceImpl(UserRepository userRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
@@ -85,6 +86,41 @@ public class UserServiceImpl implements UserService{
         accountRepository.save(bankUserAccount);
 
         return transaction;
+    }
+
+    @Override
+    public Transaction createTransferTransaction(Integer id1, Integer id2, BigDecimal amount) {
+        Account senderAccount = accountRepository.findAccountByBankUserId(id1)
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_MESSAGE));
+
+        Account beneficiaryAccount = accountRepository.findAccountByBankUserId(id2)
+                .orElseThrow(() -> new UserNotFoundException(BENEFICIARY_NOT_FOUND_MESSAGE));
+
+        if (amount.compareTo(senderAccount.getBalance()) > 0)
+            throw new LowBalanceException("Insufficient funds!");
+
+        return realizeTransferTransaction(amount, senderAccount, beneficiaryAccount);
+    }
+
+    @Transactional
+    public Transaction realizeTransferTransaction(BigDecimal amount, Account sederAccount, Account beneficiaryAccount) {
+        Transaction sendTransaction = createTransaction(amount, TransactionType.TRANSFER);
+        sendTransaction.setFromIdAccount(sederAccount.getId());
+        sendTransaction.setToIdAccount(beneficiaryAccount.getId());
+        sederAccount.getTransactions().add(sendTransaction);
+        sederAccount.setBalance(sederAccount.getBalance().subtract(amount));
+        transactionRepository.save(sendTransaction);
+        accountRepository.save(sederAccount);
+
+        Transaction receiveTransaction = createTransaction(amount, TransactionType.TRANSFER);
+        receiveTransaction.setFromIdAccount(sederAccount.getId());
+        receiveTransaction.setToIdAccount(beneficiaryAccount.getId());
+        beneficiaryAccount.getTransactions().add(receiveTransaction);
+        beneficiaryAccount.setBalance(beneficiaryAccount.getBalance().add(amount));
+        transactionRepository.save(receiveTransaction);
+        accountRepository.save(beneficiaryAccount);
+
+        return sendTransaction;
     }
 
     public Transaction createTransaction(BigDecimal amount, TransactionType transactionType) {

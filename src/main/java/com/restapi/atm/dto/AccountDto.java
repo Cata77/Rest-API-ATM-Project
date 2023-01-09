@@ -1,6 +1,5 @@
 package com.restapi.atm.dto;
 
-import com.restapi.atm.model.Transaction;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +12,5 @@ public class AccountDto {
 
     private Integer id;
     private BigDecimal balance;
-    private List<Transaction> transactions;
+    private List<BasicTransactionDto> transactions;
 }
