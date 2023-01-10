@@ -2,7 +2,7 @@ package com.restapi.atm.controller;
 
 import com.restapi.atm.dto.BankUserDto;
 import com.restapi.atm.model.BankUser;
-import com.restapi.atm.service.UserServiceImpl;
+import com.restapi.atm.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,9 @@ public class AuthenticationController {
 
     @Autowired
     private ModelMapper modelMapper;
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    public AuthenticationController(UserServiceImpl userService) {
+    public AuthenticationController(UserService userService) {
         this.userService = userService;
     }
 

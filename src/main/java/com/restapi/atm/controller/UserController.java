@@ -2,26 +2,29 @@ package com.restapi.atm.controller;
 
 import com.restapi.atm.dto.AccountDto;
 import com.restapi.atm.dto.BasicTransactionDto;
-import com.restapi.atm.dto.TransferTransactionDto;
+import com.restapi.atm.dto.TransactionDto;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.Transaction;
-import com.restapi.atm.service.UserServiceImpl;
+import com.restapi.atm.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -57,15 +60,29 @@ public class UserController {
     }
 
     @PatchMapping("/user/transfer")
-    public ResponseEntity<TransferTransactionDto> createUserTransfer(
+    public ResponseEntity<TransactionDto> createUserTransfer(
             @RequestParam String idAccount1,
             @RequestParam String idAccount2,
             @RequestParam String amount) {
         Transaction transaction = userService.createTransferTransaction(Integer.parseInt(idAccount1),
                 Integer.parseInt(idAccount2), new BigDecimal(amount));
 
-        TransferTransactionDto transferTransactionDto = modelMapper.map(transaction, TransferTransactionDto.class);
+        TransactionDto transactionDto = modelMapper.map(transaction, TransactionDto.class);
 
-        return new ResponseEntity<>(transferTransactionDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(transactionDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/user/statement")
+    public ResponseEntity<List<TransactionDto>> getBankStatementFromAPeriod(
+            @RequestParam String id,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        List<Transaction> transactions = userService.getBankStatement(Integer.parseInt(id), start.atStartOfDay(),end.atStartOfDay());
+
+        List<TransactionDto> transactionDtoList = transactions.stream().
+                map(tr -> modelMapper.map(tr, TransactionDto.class))
+                .toList();
+
+        return new ResponseEntity<>(transactionDtoList,HttpStatus.OK);
     }
 }

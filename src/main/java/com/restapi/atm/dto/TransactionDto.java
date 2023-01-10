@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class TransferTransactionDto {
+public class TransactionDto {
 
     private Integer id;
     private LocalDateTime timestamp;

@@ -25,4 +25,9 @@ public class GlobalException {
     public ResponseEntity<Object> handlerLowBalance(LowBalanceException exception, WebRequest request) {
         return new ResponseEntity<>(new ApiError(exception.getMessage(), HttpStatus.NOT_ACCEPTABLE, LocalDateTime.now()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserTransactionsNotFoundException.class)
+    public ResponseEntity<Object> handlerTransactionsNotFound(UserTransactionsNotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(new ApiError(exception.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now()), HttpStatus.NOT_FOUND);
+    }
 }
