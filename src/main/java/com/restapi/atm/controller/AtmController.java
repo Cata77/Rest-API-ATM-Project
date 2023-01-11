@@ -45,4 +45,13 @@ public class AtmController {
 
         return new ResponseEntity<>(accountDtoList, HttpStatus.OK);
     }
+
+    @GetMapping("/bank/highest-balance")
+    public ResponseEntity<AccountDto> getAccountWithHighestBalance() {
+        Account account = atmService.getHighestAccountBalance();
+
+        AccountDto accountDto = modelMapper.map(account, AccountDto.class);
+
+        return new ResponseEntity<>(accountDto, HttpStatus.OK);
+    }
 }

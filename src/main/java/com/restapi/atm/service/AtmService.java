@@ -26,4 +26,8 @@ public class AtmService {
     public List<Account> getAllUsersAccount() {
         return accountRepository.findAll();
     }
+
+    public Account getHighestAccountBalance() {
+        return accountRepository.findUserWithHighestBalance();
+    }
 }
