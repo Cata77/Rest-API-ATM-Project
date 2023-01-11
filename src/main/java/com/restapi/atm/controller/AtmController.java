@@ -1,6 +1,8 @@
 package com.restapi.atm.controller;
 
+import com.restapi.atm.dto.AccountDto;
 import com.restapi.atm.dto.BankUserDto;
+import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.service.AtmService;
 import org.modelmapper.ModelMapper;
@@ -31,5 +33,16 @@ public class AtmController {
                 .toList();
 
         return new ResponseEntity<>(bankUserDtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/bank/accounts")
+    public ResponseEntity<List<AccountDto>> getUsersAccountList() {
+        List<Account> accountList = atmService.getAllUsersAccount();
+
+        List<AccountDto> accountDtoList = accountList.stream()
+                .map(account -> modelMapper.map(account, AccountDto.class))
+                .toList();
+
+        return new ResponseEntity<>(accountDtoList, HttpStatus.OK);
     }
 }

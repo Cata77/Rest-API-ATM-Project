@@ -1,5 +1,6 @@
 package com.restapi.atm.service;
 
+import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.repository.AccountRepository;
 import com.restapi.atm.repository.UserRepository;
@@ -22,4 +23,7 @@ public class AtmService {
         return userRepository.findAll();
     }
 
+    public List<Account> getAllUsersAccount() {
+        return accountRepository.findAll();
+    }
 }
