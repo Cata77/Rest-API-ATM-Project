@@ -6,6 +6,7 @@ import com.restapi.atm.repository.AccountRepository;
 import com.restapi.atm.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -31,5 +32,10 @@ public class AtmService {
         return accountRepository.findUserWithHighestBalance();
     }
 
-
+    public BigDecimal calculateBankBalance() {
+        return accountRepository.findAll()
+                .stream()
+                .map(Account::getBalance)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }

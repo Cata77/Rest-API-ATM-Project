@@ -8,11 +8,10 @@ import com.restapi.atm.service.AtmService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -55,5 +54,12 @@ public class AtmController {
         AccountDto accountDto = modelMapper.map(account, AccountDto.class);
 
         return new ResponseEntity<>(accountDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/bank/balance")
+    public ResponseEntity<BigDecimal> getBankBalance() {
+        BigDecimal balance = atmService.calculateBankBalance();
+
+        return new ResponseEntity<>(balance,HttpStatus.OK);
     }
 }
