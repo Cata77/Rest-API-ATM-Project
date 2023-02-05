@@ -11,8 +11,10 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+    @Query(value = "SELECT * FROM transaction WHERE account_id = :id", nativeQuery = true)
+    List<Transaction> getTransactionsByAccountId(@Param("id") Integer id);
 
-    @Query(value = "SELECT * FROM transaction WHERE account_id= :id AND timestamp BETWEEN :startDate AND :endDate", nativeQuery = true)
+    @Query(value = "SELECT * FROM transaction WHERE account_id = :id AND timestamp BETWEEN :startDate AND :endDate", nativeQuery = true)
     List<Transaction> getTransactionsBetweenDates(@Param("id") Integer id,
             @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }

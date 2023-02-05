@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -84,5 +85,12 @@ public class UserController {
                 .toList();
 
         return new ResponseEntity<>(transactionDtoList,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/user/close-account/{id}")
+    public ResponseEntity<String> closeBankAccount(@PathVariable String id) {
+        userService.shotDownUserBankAccount(id);
+
+        return new ResponseEntity<>("Bank account closed",HttpStatus.OK);
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -137,5 +138,20 @@ public class UserService {
         transaction.setTimestamp(LocalDateTime.now());
         transactionRepository.save(transaction);
         return transaction;
+    }
+
+    @Transactional
+    public void shotDownUserBankAccount(String id) {
+        BankUser bankUser = userRepository.findById(Integer.parseInt(id))
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_MESSAGE));
+
+        Account account = accountRepository.findAccountByBankUserId(Integer.parseInt(id))
+                .orElseThrow(() -> new UserNotFoundException(NOT_FOUND_MESSAGE));
+
+        List<Transaction> transactions = transactionRepository.getTransactionsByAccountId(account.getId());
+
+        userRepository.delete(bankUser);
+        accountRepository.delete(account);
+        transactionRepository.deleteAll(transactions);
     }
 }
