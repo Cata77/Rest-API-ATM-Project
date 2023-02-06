@@ -62,4 +62,13 @@ public class AtmController {
 
         return new ResponseEntity<>(balance,HttpStatus.OK);
     }
+
+    @GetMapping("/bank/user-most-transactions")
+    public ResponseEntity<BankUserDto> getBankUserWithMostTransactions() {
+        BankUser bankUser = atmService.findUserWithMostTransactions();
+
+        BankUserDto bankUserDto = modelMapper.map(bankUser, BankUserDto.class);
+
+        return new ResponseEntity<>(bankUserDto,HttpStatus.OK);
+    }
 }

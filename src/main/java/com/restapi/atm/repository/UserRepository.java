@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<BankUser, Integer> {
     Optional<BankUser> findBankUserByUserName(String username);
     Optional<BankUser> findBankUserByUserNameAndPassword(String username, String password);
+    Optional<BankUser> findBankUserById(Integer id);
 }

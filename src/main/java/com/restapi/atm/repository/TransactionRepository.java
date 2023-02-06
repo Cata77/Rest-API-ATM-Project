@@ -11,6 +11,19 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+
+    @Query(value = """
+            SELECT account_id
+            FROM (
+              SELECT account_id, COUNT(*) as transactions_count
+              FROM Transaction
+              GROUP BY account_id
+              ORDER BY transactions_count DESC
+              LIMIT 1
+            ) subquery;
+            """, nativeQuery = true)
+    Integer getUserIdWithMostTransactions();
+
     @Query(value = "SELECT * FROM transaction WHERE account_id = :id", nativeQuery = true)
     List<Transaction> getTransactionsByAccountId(@Param("id") Integer id);
 

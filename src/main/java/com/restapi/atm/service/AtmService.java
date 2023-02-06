@@ -1,8 +1,10 @@
 package com.restapi.atm.service;
 
+import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.repository.AccountRepository;
+import com.restapi.atm.repository.TransactionRepository;
 import com.restapi.atm.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,12 @@ public class AtmService {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final TransactionRepository transactionRepository;
 
-    public AtmService(AccountRepository accountRepository, UserRepository userRepository) {
+    public AtmService(AccountRepository accountRepository, UserRepository userRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public List<BankUser> getAllUsers() {
@@ -37,5 +41,10 @@ public class AtmService {
                 .stream()
                 .map(Account::getBalance)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BankUser findUserWithMostTransactions() {
+        return userRepository.findBankUserById(transactionRepository.getUserIdWithMostTransactions())
+                .orElseThrow(() ->new UserNotFoundException("User not found!"));
     }
 }
