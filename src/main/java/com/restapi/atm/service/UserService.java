@@ -123,7 +123,7 @@ public class UserService {
         if (accountRepository.findAccountByBankUserId(id).isEmpty())
             throw new UserNotFoundException(NOT_FOUND_MESSAGE);
 
-        List<Transaction> transactionList = transactionRepository.getTransactionsBetweenDates(id, startDate, endDate);
+        List<Transaction> transactionList = transactionRepository.getUserTransactionsBetweenDates(id, startDate, endDate);
         if (transactionList.isEmpty())
             throw new UserTransactionsNotFoundException("No transactions found!");
 

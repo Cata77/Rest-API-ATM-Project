@@ -7,12 +7,15 @@ import com.restapi.atm.model.BankUser;
 import com.restapi.atm.model.Transaction;
 import com.restapi.atm.service.AtmService;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -86,5 +89,14 @@ public class AtmController {
         Date date = atmService.findDateWithMostTransactions();
 
         return new ResponseEntity<>(date,HttpStatus.OK);
+    }
+
+    @GetMapping("/bank/transactions-between-dates")
+    public ResponseEntity<List<Transaction>> getDateUserWithMostTransactions(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        List<Transaction> transactions = atmService.getTransactionsBetweenDate(start.atStartOfDay(),end.atStartOfDay());
+
+        return new ResponseEntity<>(transactions,HttpStatus.OK);
     }
 }

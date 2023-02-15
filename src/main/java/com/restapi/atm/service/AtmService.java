@@ -10,6 +10,7 @@ import com.restapi.atm.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -56,5 +57,9 @@ public class AtmService {
 
     public Date findDateWithMostTransactions() {
         return transactionRepository.getDateWithMostTransactions();
+    }
+
+    public List<Transaction> getTransactionsBetweenDate(LocalDateTime startDate, LocalDateTime endDate) {
+        return transactionRepository.getBankTransactionsBetweenDates(startDate, endDate);
     }
 }

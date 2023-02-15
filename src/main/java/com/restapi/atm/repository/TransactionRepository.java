@@ -38,6 +38,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     List<Transaction> getTransactionsByAccountId(@Param("id") Integer id);
 
     @Query(value = "SELECT * FROM transaction WHERE account_id = :id AND timestamp BETWEEN :startDate AND :endDate", nativeQuery = true)
-    List<Transaction> getTransactionsBetweenDates(@Param("id") Integer id,
+    List<Transaction> getUserTransactionsBetweenDates(@Param("id") Integer id,
             @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query(value = "SELECT * FROM transaction WHERE timestamp BETWEEN :startDate AND :endDate", nativeQuery = true)
+    List<Transaction> getBankTransactionsBetweenDates(@Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 }
