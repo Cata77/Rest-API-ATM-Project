@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -70,5 +71,12 @@ public class AtmController {
         BankUserDto bankUserDto = modelMapper.map(bankUser, BankUserDto.class);
 
         return new ResponseEntity<>(bankUserDto,HttpStatus.OK);
+    }
+
+    @GetMapping("/bank/date-most-transactions")
+    public ResponseEntity<Date> getDateUserWithMostTransactions() {
+        Date date = atmService.findDateWithMostTransactions();
+
+        return new ResponseEntity<>(date,HttpStatus.OK);
     }
 }

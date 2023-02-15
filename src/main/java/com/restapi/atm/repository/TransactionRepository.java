@@ -7,10 +7,20 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
+
+    @Query(value = """
+            SELECT DATE(timestamp) as date
+            FROM transaction
+            GROUP BY date
+            ORDER BY COUNT(*) DESC
+            LIMIT 1;
+            """, nativeQuery = true)
+    Date getDateWithMostTransactions();
 
     @Query(value = """
             SELECT account_id
