@@ -3,6 +3,7 @@ package com.restapi.atm.service;
 import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
+import com.restapi.atm.model.Transaction;
 import com.restapi.atm.repository.AccountRepository;
 import com.restapi.atm.repository.TransactionRepository;
 import com.restapi.atm.repository.UserRepository;
@@ -31,6 +32,10 @@ public class AtmService {
 
     public List<Account> getAllUsersAccount() {
         return accountRepository.findAll();
+    }
+
+    public List<Transaction> getAllTransactions() {
+        return transactionRepository.findAll();
     }
 
     public Account getHighestAccountBalance() {

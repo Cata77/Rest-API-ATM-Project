@@ -4,6 +4,7 @@ import com.restapi.atm.dto.AccountDto;
 import com.restapi.atm.dto.BankUserDto;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
+import com.restapi.atm.model.Transaction;
 import com.restapi.atm.service.AtmService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,13 @@ public class AtmController {
                 .toList();
 
         return new ResponseEntity<>(accountDtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/bank/transactions")
+    public ResponseEntity<List<Transaction>> getTransactionList() {
+        List<Transaction> accountList = atmService.getAllTransactions();
+
+        return new ResponseEntity<>(accountList, HttpStatus.OK);
     }
 
     @GetMapping("/bank/highest-balance")
