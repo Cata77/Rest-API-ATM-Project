@@ -21,7 +21,7 @@ public class AuthenticationController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/v1/register")
     public ResponseEntity<UserDto> registerUser(@RequestBody BankUser bankUser) {
         BankUser registeredBankUser = userService.registerUser(bankUser);
 
@@ -30,7 +30,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(userDto,HttpStatus.CREATED);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/v1/login")
     public ResponseEntity<UserDto> loginUser(@RequestBody BankUser bankUser) {
         BankUser loggedBankUser = userService.loginUser(bankUser);
 

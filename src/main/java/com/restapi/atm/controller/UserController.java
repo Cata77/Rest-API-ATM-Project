@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -28,7 +29,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/v1/{id}")
     public ResponseEntity<AccountDto> getUserDetails(@PathVariable String id) {
         Account account = userService.getUserDetails(Integer.parseInt(id));
 
@@ -37,7 +38,7 @@ public class UserController {
         return new ResponseEntity<>(accountDto, HttpStatus.OK);
     }
 
-    @PatchMapping("/user/deposit")
+    @PatchMapping("/v1/deposit")
     public ResponseEntity<BasicTransactionDto> createUserDeposit(
             @RequestParam String id,
             @RequestParam String amount) {
@@ -48,7 +49,7 @@ public class UserController {
         return new ResponseEntity<>(basicTransactionDto, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/user/withdraw")
+    @PatchMapping("/v1/withdraw")
     public ResponseEntity<BasicTransactionDto> createUserWithdraw(
             @RequestParam String id,
             @RequestParam String amount) {
@@ -59,7 +60,7 @@ public class UserController {
         return new ResponseEntity<>(basicTransactionDto, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/user/transfer")
+    @PatchMapping("/v1/transfer")
     public ResponseEntity<TransactionDto> createUserTransfer(
             @RequestParam String idAccount1,
             @RequestParam String idAccount2,
@@ -72,7 +73,7 @@ public class UserController {
         return new ResponseEntity<>(transactionDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/statement")
+    @GetMapping("/v1/statement")
     public ResponseEntity<List<TransactionDto>> getBankStatementFromAPeriod(
             @RequestParam String id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
@@ -86,7 +87,7 @@ public class UserController {
         return new ResponseEntity<>(transactionDtoList,HttpStatus.OK);
     }
 
-    @DeleteMapping("/user/close-account/{id}")
+    @DeleteMapping("/v1/close-account/{id}")
     public ResponseEntity<String> closeBankAccount(@PathVariable String id) {
         userService.shotDownUserBankAccount(id);
 
