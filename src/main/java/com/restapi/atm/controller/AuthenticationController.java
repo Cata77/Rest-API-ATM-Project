@@ -1,18 +1,16 @@
 package com.restapi.atm.controller;
 
-import com.restapi.atm.dto.RegisteredUserDto;
+import com.restapi.atm.dto.AuthenticatedUserDto;
 import com.restapi.atm.dto.UserDto;
 import com.restapi.atm.exception.ApiError;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,7 +39,7 @@ public class AuthenticationController {
                             description = "The user already exists",
                             content = @Content(schema = @Schema(implementation = ApiError.class)))}
     )
-    public ResponseEntity<UserDto> registerUser(@RequestBody RegisteredUserDto bankUser) {
+    public ResponseEntity<UserDto> registerUser(@RequestBody AuthenticatedUserDto bankUser) {
         BankUser registeredBankUser = userService.registerUser(bankUser);
 
         UserDto userDto = modelMapper.map(registeredBankUser, UserDto.class);
@@ -50,7 +48,18 @@ public class AuthenticationController {
     }
 
     @PostMapping("/v1/login")
-    public ResponseEntity<UserDto> loginUser(@RequestBody BankUser bankUser) {
+    @Operation(
+            tags = {"Authentication"},
+            description = "This endpoint authenticates a user. If the user logs in with a wrong credentials" +
+                    " , an error will occur with a suggestive message.",
+            responses = {@ApiResponse(responseCode = "200",
+                    description = "The user is logged in successfully",
+                    content = @Content(schema = @Schema(implementation = BankUser.class))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The credentials are incorrect",
+                            content = @Content(schema = @Schema(implementation = ApiError.class)))}
+    )
+    public ResponseEntity<UserDto> loginUser(@RequestBody AuthenticatedUserDto bankUser) {
         BankUser loggedBankUser = userService.loginUser(bankUser);
 
         UserDto userDto = modelMapper.map(loggedBankUser, UserDto.class);
