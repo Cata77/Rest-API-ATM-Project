@@ -7,6 +7,7 @@ import com.restapi.atm.model.BankUser;
 import com.restapi.atm.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.modelmapper.ModelMapper;
@@ -32,19 +33,35 @@ public class AuthenticationController {
             tags = {"Authentication"},
             description = "This endpoint registers a new user. If the user choose a username that" +
                     " already exists, an error will occur with a suggestive message.",
-            responses = {@ApiResponse(responseCode = "200",
-                         description = "The user is registered successfully",
-                        content = @Content(schema = @Schema(implementation = BankUser.class))),
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The user is registered successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                              "id": 1,
+                                              "userName": "testUser",
+                                              "password": "pass123"
+                                            }
+                                            """))),
                     @ApiResponse(responseCode = "404",
                             description = "The user already exists",
-                            content = @Content(schema = @Schema(implementation = ApiError.class)))}
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User already exists!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-17T14:26:11.9555656"
+                                            }
+                                            """)))
+            }
     )
     public ResponseEntity<UserDto> registerUser(@RequestBody AuthenticatedUserDto bankUser) {
         BankUser registeredBankUser = userService.registerUser(bankUser);
 
         UserDto userDto = modelMapper.map(registeredBankUser, UserDto.class);
 
-        return new ResponseEntity<>(userDto,HttpStatus.CREATED);
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
     @PostMapping("/v1/login")
@@ -54,16 +71,30 @@ public class AuthenticationController {
                     " , an error will occur with a suggestive message.",
             responses = {@ApiResponse(responseCode = "200",
                     description = "The user is logged in successfully",
-                    content = @Content(schema = @Schema(implementation = BankUser.class))),
+                    content = @Content(schema = @Schema(implementation = BankUser.class),
+                            examples = @ExampleObject(value = """
+                                    {
+                                      "id": 1,
+                                      "userName": "testUser",
+                                      "password": "pass123"
+                                    }
+                                    """))),
                     @ApiResponse(responseCode = "404",
                             description = "The credentials are incorrect",
-                            content = @Content(schema = @Schema(implementation = ApiError.class)))}
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "Bad credentials!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-17T15:08:13.27227"
+                                            }
+                                            """)))}
     )
     public ResponseEntity<UserDto> loginUser(@RequestBody AuthenticatedUserDto bankUser) {
         BankUser loggedBankUser = userService.loginUser(bankUser);
 
         UserDto userDto = modelMapper.map(loggedBankUser, UserDto.class);
 
-        return new ResponseEntity<>(userDto,HttpStatus.OK);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }
