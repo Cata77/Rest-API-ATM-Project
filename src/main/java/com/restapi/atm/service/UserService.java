@@ -1,5 +1,6 @@
 package com.restapi.atm.service;
 
+import com.restapi.atm.dto.RegisteredUserDto;
 import com.restapi.atm.exception.LowBalanceException;
 import com.restapi.atm.exception.UserAlreadyExistsException;
 import com.restapi.atm.exception.UserNotFoundException;
@@ -33,7 +34,11 @@ public class UserService {
         this.transactionRepository = transactionRepository;
     }
 
-    public BankUser registerUser(BankUser bankUser) {
+    public BankUser registerUser(RegisteredUserDto user) {
+        BankUser bankUser = new BankUser();
+        bankUser.setUserName(user.getUserName());
+        bankUser.setPassword(user.getPassword());
+
         userRepository.findBankUserByUserName(bankUser.getUserName())
                 .ifPresent(s -> { throw new UserAlreadyExistsException("User already exists!");});
 
