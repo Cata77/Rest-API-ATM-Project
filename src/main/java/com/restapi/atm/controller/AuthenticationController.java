@@ -2,6 +2,7 @@ package com.restapi.atm.controller;
 
 import com.restapi.atm.dto.RegisteredUserDto;
 import com.restapi.atm.dto.UserDto;
+import com.restapi.atm.exception.ApiError;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +35,11 @@ public class AuthenticationController {
             description = "This endpoint registers a new user. If the user choose a username that" +
                     " already exists, an error will occur with a suggestive message.",
             responses = {@ApiResponse(responseCode = "200",
-                         description = "The user is registered successfully")}
+                         description = "The user is registered successfully",
+                        content = @Content(schema = @Schema(implementation = BankUser.class))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The user already exists",
+                            content = @Content(schema = @Schema(implementation = ApiError.class)))}
     )
     public ResponseEntity<UserDto> registerUser(@RequestBody RegisteredUserDto bankUser) {
         BankUser registeredBankUser = userService.registerUser(bankUser);
