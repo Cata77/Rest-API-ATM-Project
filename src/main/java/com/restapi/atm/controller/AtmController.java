@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bank")
+@RequestMapping("/v1/bank")
 public class AtmController {
 
     private final ModelMapper modelMapper;
@@ -32,7 +32,7 @@ public class AtmController {
         this.atmService = atmService;
     }
 
-    @GetMapping("/v1/users")
+    @GetMapping("/users")
     public ResponseEntity<List<BankUserDto>> getUsersList() {
         List<BankUser> bankUserList = atmService.getAllUsers();
 
@@ -43,7 +43,7 @@ public class AtmController {
         return new ResponseEntity<>(bankUserDtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/v1/accounts")
+    @GetMapping("/accounts")
     public ResponseEntity<List<AccountDto>> getUsersAccountList() {
         List<Account> accountList = atmService.getAllUsersAccount();
 
@@ -54,14 +54,14 @@ public class AtmController {
         return new ResponseEntity<>(accountDtoList, HttpStatus.OK);
     }
 
-    @GetMapping("/v1/transactions")
+    @GetMapping("/transactions")
     public ResponseEntity<List<Transaction>> getTransactionList() {
         List<Transaction> accountList = atmService.getAllTransactions();
 
         return new ResponseEntity<>(accountList, HttpStatus.OK);
     }
 
-    @GetMapping("/v1/highest-balance")
+    @GetMapping("/highest-balance")
     public ResponseEntity<AccountDto> getAccountWithHighestBalance() {
         Account account = atmService.getHighestAccountBalance();
 
@@ -70,14 +70,14 @@ public class AtmController {
         return new ResponseEntity<>(accountDto, HttpStatus.OK);
     }
 
-    @GetMapping("/v1/balance")
+    @GetMapping("/balance")
     public ResponseEntity<BigDecimal> getBankBalance() {
         BigDecimal balance = atmService.calculateBankBalance();
 
         return new ResponseEntity<>(balance,HttpStatus.OK);
     }
 
-    @GetMapping("/v1/user-most-transactions")
+    @GetMapping("/user-most-transactions")
     public ResponseEntity<BankUserDto> getBankUserWithMostTransactions() {
         BankUser bankUser = atmService.findUserWithMostTransactions();
 
@@ -86,14 +86,14 @@ public class AtmController {
         return new ResponseEntity<>(bankUserDto,HttpStatus.OK);
     }
 
-    @GetMapping("/v1/date-most-transactions")
+    @GetMapping("/date-most-transactions")
     public ResponseEntity<Date> getDateUserWithMostTransactions() {
         Date date = atmService.findDateWithMostTransactions();
 
         return new ResponseEntity<>(date,HttpStatus.OK);
     }
 
-    @GetMapping("/v1/transactions-between-dates")
+    @GetMapping("/transactions-between-dates")
     public ResponseEntity<List<Transaction>> getDateUserWithMostTransactions(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
