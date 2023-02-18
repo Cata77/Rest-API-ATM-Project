@@ -67,7 +67,7 @@ public class AuthenticationController {
     @PostMapping("/v1/login")
     @Operation(
             tags = {"Authentication"},
-            description = "This endpoint authenticates a user. If the user logs in with a wrong credentials" +
+            description = "This endpoint authenticates a user. If the user logs in with wrong credentials" +
                     " , an error will occur with a suggestive message.",
             responses = {@ApiResponse(responseCode = "200",
                     description = "The user is logged in successfully",
