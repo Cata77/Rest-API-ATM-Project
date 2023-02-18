@@ -90,7 +90,7 @@ public class UserController {
     @PatchMapping("/deposit")
     @Operation(
             tags = {"User"},
-            description = "This endpoint deposits money into a user's bank account " +
+            description = "This endpoint deposits money into a user's bank account. " +
                     "If the user's bank account is not found, an error will occur with a suggestive message.",
             parameters = {@Parameter(name = "id", description = "User ID", example = "6"),
                           @Parameter(name = "amount", description = "Amount of money to be deposited", example = "150")},
@@ -104,7 +104,7 @@ public class UserController {
                                                   "timestamp": "2023-02-18T13:39:32.034074",
                                                   "value": 150,
                                                   "transactionType": "DEPOSIT"
-                                              }
+                                            }
                                             """))),
                     @ApiResponse(responseCode = "404",
                             description = "The user ID is not found",
@@ -129,6 +129,47 @@ public class UserController {
     }
 
     @PatchMapping("/withdraw")
+    @Operation(
+            tags = {"User"},
+            description = "This endpoint withdraws money from a user's bank account. " +
+                    "If the user's bank account is not found or if the amount to be withdrawn is higher than the " +
+                    "user's bank account balance, an error will occur with a suggestive message.",
+            parameters = {@Parameter(name = "id", description = "User ID", example = "2"),
+                    @Parameter(name = "amount", description = "Amount of money to be withdrawn", example = "10")},
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The money has been deposited successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "id": 13,
+                                                "timestamp": "2023-02-18T13:58:30.3733184",
+                                                "value": 10,
+                                                "transactionType": "WITHDRAW"
+                                            }
+                                            """))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The user ID is not found",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User not found!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-18T13:46:36.8041556"
+                                            }
+                                            """))),
+                    @ApiResponse(responseCode = "406",
+                            description = "The balance is too low to withdraw the amount of money",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "Insufficient funds!",
+                                                "status": "NOT_ACCEPTABLE",
+                                                "time": "2023-02-18T14:01:56.3154052"
+                                            }
+                                            """)))
+            }
+    )
     public ResponseEntity<BasicTransactionDto> createUserWithdraw(
             @RequestParam String id,
             @RequestParam String amount) {
