@@ -238,6 +238,49 @@ public class UserController {
     }
 
     @GetMapping("/statement")
+    @Operation(
+            tags = {"User"},
+            description = "This endpoint prints a bank statement for a certain date. " +
+                    "If the user's bank account is not found, an error will occur with a suggestive message.",
+            parameters = {@Parameter(name = "id", description = "User ID", example = "3"),
+                    @Parameter(name = "start", description = "The starting date (yyyy-MM-dd)", example = "2023-01-09"),
+                    @Parameter(name = "end", description = "The ending date (yyyy-MM-dd)", example = "2023-01-10")},
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The bank statement has been generated successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            [
+                                                 {
+                                                     "id": 3,
+                                                     "timestamp": "2023-01-09T14:48:09.97302",
+                                                     "value": 100.00,
+                                                     "transactionType": "DEPOSIT",
+                                                     "fromIdAccount": null,
+                                                     "toIdAccount": null
+                                                 },
+                                                 {
+                                                     "id": 6,
+                                                     "timestamp": "2023-01-09T14:51:41.597675",
+                                                     "value": 20.00,
+                                                     "transactionType": "TRANSFER",
+                                                     "fromIdAccount": 3,
+                                                     "toIdAccount": 1
+                                                 }
+                                             ]
+                                            """))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The user ID is not found",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User not found!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-18T13:46:36.8041556"
+                                            }
+                                            """)))
+            }
+    )
     public ResponseEntity<List<TransactionDto>> getBankStatementFromAPeriod(
             @RequestParam String id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
