@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/user")
+@RequestMapping("/v1/users")
 public class UserController {
 
     @Autowired
@@ -40,7 +40,7 @@ public class UserController {
     @GetMapping("/{id}")
     @Operation(
             tags = {"User"},
-            description = "This endpoint shows the user's bank account details (current balance and it's transactions history. " +
+            description = "This endpoint shows the user's bank account details (current balance and it's transactions history). " +
                     "If the user ID is not found, an error will occur with a suggestive message.",
             parameters = {@Parameter(name = "id", description = "User ID", example = "3")},
             responses = {
@@ -88,6 +88,36 @@ public class UserController {
     }
 
     @PatchMapping("/deposit")
+    @Operation(
+            tags = {"User"},
+            description = "This endpoint deposits money into a user's bank account " +
+                    "If the user's bank account is not found, an error will occur with a suggestive message.",
+            parameters = {@Parameter(name = "id", description = "User ID", example = "6"),
+                          @Parameter(name = "amount", description = "Amount of money to be deposited", example = "150")},
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The money has been deposited successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                  "id": 10,
+                                                  "timestamp": "2023-02-18T13:39:32.034074",
+                                                  "value": 150,
+                                                  "transactionType": "DEPOSIT"
+                                              }
+                                            """))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The user ID is not found",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User not found!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-18T13:46:36.8041556"
+                                            }
+                                            """)))
+            }
+    )
     public ResponseEntity<BasicTransactionDto> createUserDeposit(
             @RequestParam String id,
             @RequestParam String amount) {
