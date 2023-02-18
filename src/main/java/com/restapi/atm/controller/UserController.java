@@ -295,6 +295,30 @@ public class UserController {
     }
 
     @DeleteMapping("/close-account/{id}")
+    @Operation(
+            tags = {"User"},
+            description = "This endpoint closes a bank account. " +
+                    "If the user's bank account is not found, an error will occur with a suggestive message.",
+            parameters = {@Parameter(name = "id", description = "User ID", example = "7")},
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The bank account has been closed successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            Bank account closed
+                                            """))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The user ID is not found",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User not found!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-18T13:46:36.8041556"
+                                            }
+                                            """)))
+            }
+    )
     public ResponseEntity<String> closeBankAccount(@PathVariable String id) {
         userService.shotDownUserBankAccount(id);
 
