@@ -181,6 +181,50 @@ public class UserController {
     }
 
     @PatchMapping("/transfer")
+    @Operation(
+            tags = {"User"},
+            description = "This endpoint transfers money between two bank accounts. " +
+                    "If one of the bank account is not found or if the amount to be withdrawn is higher than the " +
+                    "sender's bank account balance, an error will occur with a suggestive message.",
+            parameters = {@Parameter(name = "idAccount1", description = "Sender User ID", example = "6"),
+                    @Parameter(name = "idAccount2", description = "Beneficiary User ID", example = "2"),
+                    @Parameter(name = "amount", description = "Amount of money to be transferred", example = "20")},
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The money has been transferred successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "id": 14,
+                                                "timestamp": "2023-02-18T14:32:40.3847779",
+                                                "value": 20,
+                                                "transactionType": "TRANSFER",
+                                                "fromIdAccount": 6,
+                                                "toIdAccount": 2
+                                            }
+                                            """))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The user ID is not found",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User not found!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-18T13:46:36.8041556"
+                                            }
+                                            """))),
+                    @ApiResponse(responseCode = "406",
+                            description = "The sender's balance is too low to transfer the amount of money",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "Insufficient funds!",
+                                                "status": "NOT_ACCEPTABLE",
+                                                "time": "2023-02-18T14:01:56.3154052"
+                                            }
+                                            """)))
+            }
+    )
     public ResponseEntity<TransactionDto> createUserTransfer(
             @RequestParam String idAccount1,
             @RequestParam String idAccount2,
