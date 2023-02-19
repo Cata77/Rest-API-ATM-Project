@@ -152,6 +152,43 @@ public class AtmController {
     }
 
     @GetMapping("/transactions")
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint shows the list of all bank transactions.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The list of bank transactions has been generated successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            [
+                                                 {
+                                                     "id": 1,
+                                                     "timestamp": "2023-01-09T14:47:54.073484",
+                                                     "value": 10.00,
+                                                     "transactionType": "DEPOSIT",
+                                                     "fromIdAccount": null,
+                                                     "toIdAccount": null
+                                                 },
+                                                 {
+                                                     "id": 2,
+                                                     "timestamp": "2023-01-09T14:48:01.207005",
+                                                     "value": 50.00,
+                                                     "transactionType": "DEPOSIT",
+                                                     "fromIdAccount": null,
+                                                     "toIdAccount": null
+                                                 },
+                                                 {
+                                                     "id": 3,
+                                                     "timestamp": "2023-01-09T14:48:09.97302",
+                                                     "value": 100.00,
+                                                     "transactionType": "DEPOSIT",
+                                                     "fromIdAccount": null,
+                                                     "toIdAccount": null
+                                                 }
+                                            ]
+                                            """)))
+            }
+    )
     public ResponseEntity<List<Transaction>> getTransactionList() {
         List<Transaction> accountList = atmService.getAllTransactions();
 
