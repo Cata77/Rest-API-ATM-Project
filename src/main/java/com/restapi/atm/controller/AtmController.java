@@ -196,6 +196,41 @@ public class AtmController {
     }
 
     @GetMapping("/highest-balance")
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint shows the account with the highest balance.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The account with the highest balance was found successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                 "id": 6,
+                                                 "balance": 280.00,
+                                                 "transactions": [
+                                                     {
+                                                         "id": 10,
+                                                         "timestamp": "2023-02-18T13:39:32.034074",
+                                                         "value": 150.00,
+                                                         "transactionType": "DEPOSIT"
+                                                     },
+                                                     {
+                                                         "id": 11,
+                                                         "timestamp": "2023-02-18T13:47:41.758348",
+                                                         "value": 150.00,
+                                                         "transactionType": "DEPOSIT"
+                                                     },
+                                                     {
+                                                         "id": 14,
+                                                         "timestamp": "2023-02-18T14:32:40.384778",
+                                                         "value": 20.00,
+                                                         "transactionType": "TRANSFER"
+                                                     }
+                                                 ]
+                                             }
+                                            """)))
+            }
+    )
     public ResponseEntity<AccountDto> getAccountWithHighestBalance() {
         Account account = atmService.getHighestAccountBalance();
 
