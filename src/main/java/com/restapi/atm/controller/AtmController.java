@@ -259,6 +259,32 @@ public class AtmController {
     }
 
     @GetMapping("/user-most-transactions")
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint shows the bank user with the most transactions done. If such user is not found" +
+                    ", an error will occur with a suggestive message.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The user is found successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "id": 2,
+                                                "username": "user2"
+                                            }
+                                            """))),
+                    @ApiResponse(responseCode = "404",
+                            description = "The user is not found",
+                            content = @Content(schema = @Schema(implementation = ApiError.class),
+                                    examples = @ExampleObject(value = """
+                                            {
+                                                "message": "User not found!",
+                                                "status": "NOT_FOUND",
+                                                "time": "2023-02-17T14:26:11.9555656"
+                                            }
+                                            """)))
+            }
+    )
     public ResponseEntity<BankUserDto> getBankUserWithMostTransactions() {
         BankUser bankUser = atmService.findUserWithMostTransactions();
 
