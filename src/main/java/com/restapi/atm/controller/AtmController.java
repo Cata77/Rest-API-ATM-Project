@@ -2,10 +2,17 @@ package com.restapi.atm.controller;
 
 import com.restapi.atm.dto.AccountDto;
 import com.restapi.atm.dto.BankUserDto;
+import com.restapi.atm.exception.ApiError;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.model.Transaction;
 import com.restapi.atm.service.AtmService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -33,6 +40,31 @@ public class AtmController {
     }
 
     @GetMapping("/users")
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint shows the list of all bank users.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The list of bank users has been generated successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            [
+                                                {
+                                                    "id": 1,
+                                                    "username": "user1"
+                                                },
+                                                {
+                                                    "id": 2,
+                                                    "username": "user2"
+                                                },
+                                                {
+                                                    "id": 3,
+                                                    "username": "user3"
+                                                }
+                                            ]
+                                            """)))
+            }
+    )
     public ResponseEntity<List<BankUserDto>> getUsersList() {
         List<BankUser> bankUserList = atmService.getAllUsers();
 
