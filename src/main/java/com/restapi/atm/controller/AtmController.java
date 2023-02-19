@@ -294,6 +294,18 @@ public class AtmController {
     }
 
     @GetMapping("/date-most-transactions")
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint prints the date in which most transactions have been done.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The date is generated successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            "2023-01-09"
+                                            """)))
+            }
+    )
     public ResponseEntity<Date> getDateUserWithMostTransactions() {
         Date date = atmService.findDateWithMostTransactions();
 
