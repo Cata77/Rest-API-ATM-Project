@@ -76,6 +76,71 @@ public class AtmController {
     }
 
     @GetMapping("/accounts")
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint shows the bank account of each user.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The list of bank accounts has been generated successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            [
+                                                 {
+                                                     "id": 3,
+                                                     "balance": 50.00,
+                                                     "transactions": [
+                                                         {
+                                                             "id": 3,
+                                                             "timestamp": "2023-01-09T14:48:09.97302",
+                                                             "value": 100.00,
+                                                             "transactionType": "DEPOSIT"
+                                                         },
+                                                         {
+                                                             "id": 6,
+                                                             "timestamp": "2023-01-09T14:51:41.597675",
+                                                             "value": 20.00,
+                                                             "transactionType": "TRANSFER"
+                                                         }
+                                                     ]
+                                                 },
+                                                 {
+                                                     "id": 8,
+                                                     "balance": 0.00,
+                                                     "transactions": []
+                                                 },
+                                                 {
+                                                     "id": 9,
+                                                     "balance": 0.00,
+                                                     "transactions": []
+                                                 },
+                                                 {
+                                                     "id": 6,
+                                                     "balance": 280.00,
+                                                     "transactions": [
+                                                         {
+                                                             "id": 10,
+                                                             "timestamp": "2023-02-18T13:39:32.034074",
+                                                             "value": 150.00,
+                                                             "transactionType": "DEPOSIT"
+                                                         },
+                                                         {
+                                                             "id": 11,
+                                                             "timestamp": "2023-02-18T13:47:41.758348",
+                                                             "value": 150.00,
+                                                             "transactionType": "DEPOSIT"
+                                                         },
+                                                         {
+                                                             "id": 14,
+                                                             "timestamp": "2023-02-18T14:32:40.384778",
+                                                             "value": 20.00,
+                                                             "transactionType": "TRANSFER"
+                                                         }
+                                                     ]
+                                                 }
+                                             ]
+                                            """)))
+            }
+    )
     public ResponseEntity<List<AccountDto>> getUsersAccountList() {
         List<Account> accountList = atmService.getAllUsersAccount();
 
