@@ -240,6 +240,18 @@ public class AtmController {
     }
 
     @GetMapping("/balance")
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint shows the current bank's balance.",
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The current bank's balance was printed successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            500.00
+                                            """)))
+            }
+    )
     public ResponseEntity<BigDecimal> getBankBalance() {
         BigDecimal balance = atmService.calculateBankBalance();
 
