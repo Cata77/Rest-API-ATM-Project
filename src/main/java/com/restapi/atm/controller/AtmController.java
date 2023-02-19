@@ -313,7 +313,30 @@ public class AtmController {
     }
 
     @GetMapping("/transactions-between-dates")
-    public ResponseEntity<List<Transaction>> getDateUserWithMostTransactions(
+    @Operation(
+            tags = {"Bank"},
+            description = "This endpoint prints a list of transactions that occurred between two given dates.",
+            parameters = {@Parameter(name = "start", description = "The starting date (yyyy-MM-dd)", example = "2023-02-05"),
+                    @Parameter(name = "end", description = "The ending date (yyyy-MM-dd)", example = "2023-02-06")},
+            responses = {
+                    @ApiResponse(responseCode = "200",
+                            description = "The bank list of transactions has been generated successfully",
+                            content = @Content(schema = @Schema(implementation = BankUser.class),
+                                    examples = @ExampleObject(value = """
+                                            [
+                                                  {
+                                                      "id": 8,
+                                                      "timestamp": "2023-02-05T14:48:44.462991",
+                                                      "value": 100.00,
+                                                      "transactionType": "DEPOSIT",
+                                                      "fromIdAccount": null,
+                                                      "toIdAccount": null
+                                                  }
+                                             ]
+                                            """)))
+            }
+    )
+    public ResponseEntity<List<Transaction>> getTransactionsBetweenDates(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         List<Transaction> transactions = atmService.getTransactionsBetweenDate(start.atStartOfDay(),end.atStartOfDay());
