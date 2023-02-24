@@ -24,6 +24,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private LocalDateTime timestamp;
+    @Column(name = "trValue")
     private BigDecimal value;
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
