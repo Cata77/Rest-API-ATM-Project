@@ -33,6 +33,8 @@ class AtmServiceTest {
 
     @Test
     void getAllUsersAccount() {
+        atmService.getAllUsersAccount();
+        verify(accountRepository).findAll();
     }
 
     @Test
