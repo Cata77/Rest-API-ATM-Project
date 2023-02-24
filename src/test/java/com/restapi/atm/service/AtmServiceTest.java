@@ -39,6 +39,8 @@ class AtmServiceTest {
 
     @Test
     void getAllTransactions() {
+        atmService.getAllTransactions();
+        verify(transactionRepository).findAll();
     }
 
     @Test
