@@ -1,17 +1,20 @@
 package com.restapi.atm.service;
 
+import com.restapi.atm.model.Account;
 import com.restapi.atm.repository.AccountRepository;
 import com.restapi.atm.repository.TransactionRepository;
 import com.restapi.atm.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AtmServiceTest {
@@ -45,6 +48,8 @@ class AtmServiceTest {
 
     @Test
     void getHighestAccountBalance() {
+        atmService.getHighestAccountBalance();
+        verify(accountRepository).findUserWithHighestBalance();
     }
 
     @Test
