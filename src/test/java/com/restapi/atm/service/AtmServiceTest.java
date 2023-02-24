@@ -18,14 +18,17 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AtmServiceTest {
-    @Mock private AccountRepository accountRepository;
-    @Mock private UserRepository userRepository;
-    @Mock private TransactionRepository transactionRepository;
+    @Mock
+    private AccountRepository accountRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private TransactionRepository transactionRepository;
     private AtmService atmService;
 
     @BeforeEach
     void setUp() {
-        atmService = new AtmService(accountRepository,userRepository,transactionRepository);
+        atmService = new AtmService(accountRepository, userRepository, transactionRepository);
     }
 
     @Test
@@ -54,6 +57,21 @@ class AtmServiceTest {
 
     @Test
     void calculateBankBalance() {
+        Account account1 = new Account();
+        account1.setBalance(BigDecimal.valueOf(100));
+
+        Account account2 = new Account();
+        account2.setBalance(BigDecimal.valueOf(200));
+
+        Account account3 = new Account();
+        account3.setBalance(BigDecimal.valueOf(300));
+
+        List<Account> accounts = List.of(account1, account2, account3);
+        when(accountRepository.findAll()).thenReturn(accounts);
+
+        BigDecimal bankBalance = atmService.calculateBankBalance();
+
+        assertEquals(BigDecimal.valueOf(600), bankBalance);
     }
 
     @Test
