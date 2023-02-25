@@ -14,14 +14,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 @DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class AccountRepositoryTest {
     @Autowired
     private AccountRepository accountRepository;
-    @Autowired
-    private UserRepository userRepository;
     private Account account1;
     private Account account2;
 
