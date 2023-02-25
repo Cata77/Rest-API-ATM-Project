@@ -25,7 +25,7 @@ public class Account {
     @OneToOne(cascade = CascadeType.ALL)
     private BankUser bankUser;
     private BigDecimal balance;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private List<Transaction> transactions;
 
