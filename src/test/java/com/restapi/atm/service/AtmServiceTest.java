@@ -1,5 +1,6 @@
 package com.restapi.atm.service;
 
+import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.repository.AccountRepository;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,6 +87,14 @@ class AtmServiceTest {
         when(userRepository.findBankUserById(1)).thenReturn(Optional.of(bankUser));
         BankUser result = atmService.findUserWithMostTransactions();
         assertEquals(bankUser,result);
+    }
+
+    @Test
+    void testFindUserWithMostTransactionsThrowsException() {
+        when(transactionRepository.getUserIdWithMostTransactions()).thenReturn(null);
+        assertThatThrownBy(() -> atmService.findUserWithMostTransactions())
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("User not found!");
     }
 
     @Test
