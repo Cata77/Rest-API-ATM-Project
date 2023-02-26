@@ -1,6 +1,7 @@
 package com.restapi.atm.service;
 
 import com.restapi.atm.model.Account;
+import com.restapi.atm.model.BankUser;
 import com.restapi.atm.repository.AccountRepository;
 import com.restapi.atm.repository.TransactionRepository;
 import com.restapi.atm.repository.UserRepository;
@@ -12,9 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AtmServiceTest {
@@ -76,6 +79,11 @@ class AtmServiceTest {
 
     @Test
     void findUserWithMostTransactions() {
+        BankUser bankUser = new BankUser(1,"Test User 1", "pass");
+        when(transactionRepository.getUserIdWithMostTransactions()).thenReturn(1);
+        when(userRepository.findBankUserById(1)).thenReturn(Optional.of(bankUser));
+        BankUser result = atmService.findUserWithMostTransactions();
+        assertEquals(bankUser,result);
     }
 
     @Test
