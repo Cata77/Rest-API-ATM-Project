@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,10 +88,10 @@ class AtmServiceTest {
     }
 
     @Test
-    void findDateWithMostTransactions() {
-    }
-
-    @Test
     void getTransactionsBetweenDate() {
+        LocalDateTime start = LocalDateTime.of(2023,2,26,5,0);
+        LocalDateTime end = LocalDateTime.of(2023,2,26,10,0);
+        atmService.getTransactionsBetweenDate(start,end);
+        verify(transactionRepository).getBankTransactionsBetweenDates(start,end);
     }
 }
