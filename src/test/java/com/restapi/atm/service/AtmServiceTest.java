@@ -9,6 +9,7 @@ import com.restapi.atm.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -30,12 +31,8 @@ class AtmServiceTest {
     private UserRepository userRepository;
     @Mock
     private TransactionRepository transactionRepository;
+    @InjectMocks
     private AtmService atmService;
-
-    @BeforeEach
-    void setUp() {
-        atmService = new AtmService(accountRepository, userRepository, transactionRepository);
-    }
 
     @Test
     void getAllUsers() {
