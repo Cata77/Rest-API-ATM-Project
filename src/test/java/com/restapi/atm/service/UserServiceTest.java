@@ -4,6 +4,7 @@ import com.restapi.atm.dto.AuthenticatedUserDto;
 import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
+import com.restapi.atm.model.Transaction;
 import com.restapi.atm.repository.AccountRepository;
 import com.restapi.atm.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,7 @@ class UserServiceTest {
     private AccountRepository accountRepository;
     private AuthenticatedUserDto userDto;
     private BankUser bankUser1;
+    private Account account1;
 
     @BeforeEach
     void setUp() {
@@ -44,6 +47,11 @@ class UserServiceTest {
         bankUser1 = new BankUser();
         bankUser1.setUserName("User 1");
         bankUser1.setPassword("testPass");
+
+        account1 = new Account();
+        account1.setBankUser(bankUser1);
+        account1.setBalance(BigDecimal.valueOf(250));
+        account1.setTransactions(List.of(new Transaction()));
 
         BankUser bankUser2 = new BankUser();
         bankUser2.setUserName("User 3");
@@ -94,6 +102,9 @@ class UserServiceTest {
 
     @Test
     void getUserDetails() {
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(account1));
+        Account result = userService.getUserDetails(1);
+        assertEquals(account1,result);
     }
 
     @Test
