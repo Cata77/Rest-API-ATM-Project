@@ -1,6 +1,7 @@
 package com.restapi.atm.service;
 
 import com.restapi.atm.dto.AuthenticatedUserDto;
+import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.repository.AccountRepository;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,6 +81,15 @@ class UserServiceTest {
                 .thenReturn(Optional.of(bankUser1));
         BankUser result = userService.loginUser(userDto);
         assertEquals(bankUser1,result);
+    }
+
+    @Test
+    void loginUserThrowsException() {
+        when(userRepository.findBankUserByUserNameAndPassword("User 1", "wrongPass"))
+                .thenReturn(null);
+        assertThatThrownBy(() -> userService.loginUser(userDto))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("Bad credentials!");
     }
 
     @Test
