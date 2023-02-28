@@ -6,7 +6,9 @@ import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.model.Transaction;
+import com.restapi.atm.model.TransactionType;
 import com.restapi.atm.repository.AccountRepository;
+import com.restapi.atm.repository.TransactionRepository;
 import com.restapi.atm.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +38,8 @@ class UserServiceTest {
     private UserRepository userRepository;
     @Spy
     private AccountRepository accountRepository;
+    @Spy
+    private TransactionRepository transactionRepository;
     private AuthenticatedUserDto userDto;
     private BankUser bankUser1;
     private Account account1;
@@ -143,6 +148,17 @@ class UserServiceTest {
 
     @Test
     void createTransaction() {
+        Transaction transaction = new Transaction();
+        transaction.setTimestamp(LocalDateTime.now());
+        transaction.setValue(BigDecimal.valueOf(100));
+        transaction.setTransactionType(TransactionType.DEPOSIT);
+
+        userService.createTransaction(BigDecimal.valueOf(100),TransactionType.DEPOSIT);
+
+        ArgumentCaptor<Transaction> transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
+        verify(transactionRepository).save(transactionArgumentCaptor.capture());
+        Transaction capturedTransaction = transactionArgumentCaptor.getValue();
+        assertEquals(capturedTransaction,transaction);
     }
 
     @Test
