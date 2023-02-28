@@ -1,6 +1,7 @@
 package com.restapi.atm.service;
 
 import com.restapi.atm.dto.AuthenticatedUserDto;
+import com.restapi.atm.exception.LowBalanceException;
 import com.restapi.atm.exception.UserAlreadyExistsException;
 import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
@@ -180,6 +181,18 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.createWithdrawTransaction(10,BigDecimal.valueOf(100)))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessage("User not found!");
+    }
+
+    @Test
+    void createWithdrawTransactionThrowsLowBalanceException() {
+        Account account = new Account();
+        account.setBalance(BigDecimal.valueOf(10));
+        account.setTransactions(new ArrayList<>());
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(account));
+
+        assertThatThrownBy(() -> userService.createWithdrawTransaction(1,BigDecimal.valueOf(100)))
+                .isInstanceOf(LowBalanceException.class)
+                .hasMessage("Insufficient funds!");
     }
 
     @Test
