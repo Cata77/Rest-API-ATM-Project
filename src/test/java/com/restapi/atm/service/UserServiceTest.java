@@ -1,6 +1,7 @@
 package com.restapi.atm.service;
 
 import com.restapi.atm.dto.AuthenticatedUserDto;
+import com.restapi.atm.exception.UserAlreadyExistsException;
 import com.restapi.atm.exception.UserNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
@@ -77,6 +78,15 @@ class UserServiceTest {
         verify(userRepository).save(bankUserArgumentCaptor.capture());
         BankUser capturedBankUser = bankUserArgumentCaptor.getValue();
         assertEquals(capturedBankUser,bankUser1);
+    }
+
+    @Test
+    void registerUserThrowsException() {
+        when(userRepository.findBankUserByUserName("User 1"))
+                .thenReturn(Optional.ofNullable(bankUser1));
+        assertThatThrownBy(() -> userService.registerUser(userDto))
+                .isInstanceOf(UserAlreadyExistsException.class)
+                .hasMessage("User already exists!");
     }
 
     @Test
