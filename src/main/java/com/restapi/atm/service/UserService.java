@@ -104,17 +104,17 @@ public class UserService {
     }
 
     @Transactional
-    public Transaction realizeTransferTransaction(BigDecimal amount, Account sederAccount, Account beneficiaryAccount) {
+    public Transaction realizeTransferTransaction(BigDecimal amount, Account senderAccount, Account beneficiaryAccount) {
         Transaction sendTransaction = createTransaction(amount, TransactionType.TRANSFER);
-        sendTransaction.setFromIdAccount(sederAccount.getId());
+        sendTransaction.setFromIdAccount(senderAccount.getId());
         sendTransaction.setToIdAccount(beneficiaryAccount.getId());
-        sederAccount.getTransactions().add(sendTransaction);
-        sederAccount.setBalance(sederAccount.getBalance().subtract(amount));
+        senderAccount.getTransactions().add(sendTransaction);
+        senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
         transactionRepository.save(sendTransaction);
-        accountRepository.save(sederAccount);
+        accountRepository.save(senderAccount);
 
         Transaction receiveTransaction = createTransaction(amount, TransactionType.TRANSFER);
-        receiveTransaction.setFromIdAccount(sederAccount.getId());
+        receiveTransaction.setFromIdAccount(senderAccount.getId());
         receiveTransaction.setToIdAccount(beneficiaryAccount.getId());
         beneficiaryAccount.getTransactions().add(receiveTransaction);
         beneficiaryAccount.setBalance(beneficiaryAccount.getBalance().add(amount));

@@ -28,8 +28,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DataJpaTest
@@ -201,6 +200,47 @@ class UserServiceTest {
 
     @Test
     void realizeTransferTransaction() {
+        Account senderAccount = new Account();
+        senderAccount.setId(1);
+        senderAccount.setBalance(BigDecimal.valueOf(200));
+        senderAccount.setTransactions(new ArrayList<>());
+
+        Account beneficiaryAccount = new Account();
+        beneficiaryAccount.setId(1);
+        beneficiaryAccount.setTransactions(new ArrayList<>());
+
+        Transaction sendTransaction = new Transaction();
+        sendTransaction.setTimestamp(LocalDateTime.now());
+        sendTransaction.setValue(BigDecimal.valueOf(100));
+        sendTransaction.setTransactionType(TransactionType.TRANSFER);
+        sendTransaction.setFromIdAccount(senderAccount.getId());
+        sendTransaction.setToIdAccount(beneficiaryAccount.getId());
+        senderAccount.getTransactions().add(sendTransaction);
+        senderAccount.setBalance(senderAccount.getBalance().subtract(BigDecimal.valueOf(100)));
+
+        Transaction receiveTransaction = new Transaction();
+        receiveTransaction.setTimestamp(LocalDateTime.now());
+        receiveTransaction.setValue(BigDecimal.valueOf(100));
+        receiveTransaction.setTransactionType(TransactionType.TRANSFER);
+        receiveTransaction.setFromIdAccount(senderAccount.getId());
+        receiveTransaction.setToIdAccount(beneficiaryAccount.getId());
+        beneficiaryAccount.getTransactions().add(receiveTransaction);
+        beneficiaryAccount.setBalance(senderAccount.getBalance().add(BigDecimal.valueOf(100)));
+
+        userService.realizeTransferTransaction(BigDecimal.valueOf(100),senderAccount,beneficiaryAccount);
+
+        ArgumentCaptor<Transaction> transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
+        verify(transactionRepository,atLeast(2)).save(transactionArgumentCaptor.capture());
+        List<Transaction> passedTransactions = transactionArgumentCaptor.getAllValues();
+        assertEquals(passedTransactions.get(0),sendTransaction);
+        assertEquals(passedTransactions.get(1),receiveTransaction);
+
+        ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
+        verify(accountRepository,atLeast(2)).save(accountArgumentCaptor.capture());
+        List<Account> passedAccounts = accountArgumentCaptor.getAllValues();
+        assertEquals(passedAccounts.get(0),senderAccount);
+        assertEquals(passedAccounts.get(1),beneficiaryAccount);
+
     }
 
     @Test
@@ -209,7 +249,7 @@ class UserServiceTest {
 
     @Test
     void createTransaction() {
-        Transaction transaction = new Transaction();
+        transaction = new Transaction();
         transaction.setTimestamp(LocalDateTime.now());
         transaction.setValue(BigDecimal.valueOf(100));
         transaction.setTransactionType(TransactionType.DEPOSIT);
