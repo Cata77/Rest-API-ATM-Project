@@ -21,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,7 @@ class UserServiceTest {
     private AuthenticatedUserDto userDto;
     private BankUser bankUser1;
     private Account account1;
+    private Transaction transaction;
 
     @BeforeEach
     void setUp() {
@@ -62,6 +64,12 @@ class UserServiceTest {
         BankUser bankUser2 = new BankUser();
         bankUser2.setUserName("User 3");
         bankUser2.setPassword("testPass");
+
+        transaction = new Transaction();
+        transaction.setTimestamp(LocalDateTime.now());
+        transaction.setValue(BigDecimal.valueOf(100));
+        transaction.setTransactionType(TransactionType.DEPOSIT);
+
         userRepository.saveAll(List.of(bankUser1,bankUser2));
     }
 
@@ -128,6 +136,17 @@ class UserServiceTest {
 
     @Test
     void createDepositTransaction() {
+        Account account = new Account();
+        account.setTransactions(new ArrayList<>());
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(account));
+        userService.createDepositTransaction(1,BigDecimal.valueOf(100));
+        account.getTransactions().add(transaction);
+        account.setBalance(account.getBalance().add(BigDecimal.valueOf(100)));
+
+        ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
+        verify(accountRepository).save(accountArgumentCaptor.capture());
+        Account capturedAccount = accountArgumentCaptor.getValue();
+        assertEquals(capturedAccount,account);
     }
 
     @Test
