@@ -150,6 +150,14 @@ class UserServiceTest {
     }
 
     @Test
+    void createDepositTransactionThrowsException() {
+        when(accountRepository.findAccountByBankUserId(10)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> userService.createDepositTransaction(10,BigDecimal.valueOf(100)))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("User not found!");
+    }
+
+    @Test
     void createWithdrawTransaction() {
     }
 
