@@ -61,14 +61,10 @@ class UserServiceTest {
 
     @Test
     void registerUser() {
-        BankUser bankUser = new BankUser();
-        bankUser.setUserName("Test User");
-        bankUser.setPassword("testPass");
-
         Account account = new Account();
-        account.setBankUser(bankUser);
+        account.setBankUser(bankUser1);
 
-        when(userRepository.findBankUserByUserName(userDto.getUserName())).thenReturn(Optional.of(bankUser));
+        when(userRepository.findBankUserByUserName(userDto.getUserName())).thenReturn(Optional.empty());
 
         userService.registerUser(userDto);
 
@@ -80,7 +76,7 @@ class UserServiceTest {
         ArgumentCaptor<BankUser> bankUserArgumentCaptor = ArgumentCaptor.forClass(BankUser.class);
         verify(userRepository).save(bankUserArgumentCaptor.capture());
         BankUser capturedBankUser = bankUserArgumentCaptor.getValue();
-        assertEquals(capturedBankUser,bankUser);
+        assertEquals(capturedBankUser,bankUser1);
     }
 
     @Test

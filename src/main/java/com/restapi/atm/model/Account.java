@@ -1,10 +1,7 @@
 package com.restapi.atm.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -15,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@EqualsAndHashCode
+@ToString
 @Component
 @Table(name = "account")
 public class Account {
