@@ -159,6 +159,19 @@ class UserServiceTest {
 
     @Test
     void createWithdrawTransaction() {
+        Account account = new Account();
+        account.setBalance(BigDecimal.valueOf(200));
+        account.setTransactions(new ArrayList<>());
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(account));
+        userService.createWithdrawTransaction(1,BigDecimal.valueOf(100));
+        transaction.setTransactionType(TransactionType.WITHDRAW);
+        account.getTransactions().add(transaction);
+        account.setBalance(account.getBalance().subtract(BigDecimal.valueOf(100)));
+
+        ArgumentCaptor<Account> accountArgumentCaptor = ArgumentCaptor.forClass(Account.class);
+        verify(accountRepository).save(accountArgumentCaptor.capture());
+        Account capturedAccount = accountArgumentCaptor.getValue();
+        assertEquals(capturedAccount,account);
     }
 
     @Test
