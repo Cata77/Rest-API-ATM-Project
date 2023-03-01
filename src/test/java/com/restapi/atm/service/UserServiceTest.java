@@ -309,7 +309,15 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled
     void shotDownUserBankAccount() {
+        when(userRepository.findById(1)).thenReturn(Optional.of(bankUser1));
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(account1));
+        when(transactionRepository.getTransactionsByAccountId(1)).thenReturn(new ArrayList<>());
+
+        userService.shotDownUserBankAccount("1");
+
+        verify(userRepository,times(1)).delete(any(BankUser.class));
+        verify(accountRepository,times(1)).delete(any(Account.class));
+        verify(transactionRepository,times(1)).deleteAll(anyIterable());
     }
 }
