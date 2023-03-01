@@ -255,8 +255,21 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled
     void getBankStatement() {
+        Account account = new Account(1, new BankUser(), BigDecimal.valueOf(500),new ArrayList<>());
+        LocalDateTime start = LocalDateTime.of(2023,2,26,5,0);
+        LocalDateTime end = LocalDateTime.of(2023,2,26,10,0);
+        Transaction transaction = new Transaction();
+        transaction.setValue(BigDecimal.valueOf(100));
+        transaction.setTimestamp(LocalDateTime.of(2023,2,26,6,0));
+        List<Transaction> transactions = List.of(transaction);
+
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(account));
+        when(transactionRepository.getUserTransactionsBetweenDates(1,start,end)).thenReturn(transactions);
+
+        List<Transaction> result = userService.getBankStatement(1,start,end);
+
+        assertEquals(transactions,result);
     }
 
     @Test
