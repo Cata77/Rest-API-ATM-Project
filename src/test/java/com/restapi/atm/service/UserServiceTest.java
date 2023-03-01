@@ -273,6 +273,14 @@ class UserServiceTest {
     }
 
     @Test
+    void getBankStatementThrowsUserNotFoundException() {
+        when(accountRepository.findAccountByBankUserId(10)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> userService.getBankStatement(10,LocalDateTime.now(),LocalDateTime.now()))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("User not found!");
+    }
+
+    @Test
     void createTransaction() {
         transaction = new Transaction();
         transaction.setTimestamp(LocalDateTime.now());
