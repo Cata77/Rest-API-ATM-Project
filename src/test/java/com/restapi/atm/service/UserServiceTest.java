@@ -4,6 +4,7 @@ import com.restapi.atm.dto.AuthenticatedUserDto;
 import com.restapi.atm.exception.LowBalanceException;
 import com.restapi.atm.exception.UserAlreadyExistsException;
 import com.restapi.atm.exception.UserNotFoundException;
+import com.restapi.atm.exception.UserTransactionsNotFoundException;
 import com.restapi.atm.model.Account;
 import com.restapi.atm.model.BankUser;
 import com.restapi.atm.model.Transaction;
@@ -278,6 +279,18 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.getBankStatement(10,LocalDateTime.now(),LocalDateTime.now()))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessage("User not found!");
+    }
+
+    @Test
+    void getBankStatementThrowsUserTransactionsNotFoundException() {
+        Account account = new Account(1, new BankUser(), BigDecimal.valueOf(500),new ArrayList<>());
+
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(account));
+        when(transactionRepository.getUserTransactionsBetweenDates(1,LocalDateTime.now(),LocalDateTime.now())).thenReturn(new ArrayList<>());
+
+        assertThatThrownBy(() -> userService.getBankStatement(1,LocalDateTime.now(),LocalDateTime.now()))
+                .isInstanceOf(UserTransactionsNotFoundException.class)
+                .hasMessage("No transactions found!");
     }
 
     @Test
