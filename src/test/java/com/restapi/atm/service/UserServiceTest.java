@@ -13,7 +13,6 @@ import com.restapi.atm.repository.AccountRepository;
 import com.restapi.atm.repository.TransactionRepository;
 import com.restapi.atm.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -46,9 +45,7 @@ class UserServiceTest {
     private TransactionRepository transactionRepository;
     private AuthenticatedUserDto userDto;
     private BankUser bankUser1;
-    private BankUser bankUser2;
     private Account account1;
-    private Account account2;
     private Transaction transaction;
 
     @BeforeEach
@@ -66,21 +63,16 @@ class UserServiceTest {
         account1.setBalance(BigDecimal.valueOf(250));
         account1.setTransactions(List.of(new Transaction()));
 
-        bankUser2 = new BankUser();
+        BankUser bankUser2 = new BankUser();
         bankUser2.setUserName("User 3");
         bankUser2.setPassword("testPass");
-
-        account2 = new Account();
-        account2.setBankUser(bankUser2);
-        account2.setBalance(BigDecimal.valueOf(120));
-        account2.setTransactions(List.of(new Transaction()));
 
         transaction = new Transaction();
         transaction.setTimestamp(LocalDateTime.now());
         transaction.setValue(BigDecimal.valueOf(100));
         transaction.setTransactionType(TransactionType.DEPOSIT);
 
-        userRepository.saveAll(List.of(bankUser1,bankUser2));
+        userRepository.saveAll(List.of(bankUser1, bankUser2));
     }
 
     @Test
