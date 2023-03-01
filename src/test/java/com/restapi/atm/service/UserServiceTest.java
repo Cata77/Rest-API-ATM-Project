@@ -205,6 +205,22 @@ class UserServiceTest {
 
     @Test
     void createTransferTransaction() {
+        Account senderAccount = new Account();
+        senderAccount.setBalance(BigDecimal.valueOf(200));
+        senderAccount.setTransactions(new ArrayList<>());
+        Account beneficiaryAccount = new Account();
+        beneficiaryAccount.setBalance(BigDecimal.valueOf(400));
+        beneficiaryAccount.setTransactions(new ArrayList<>());
+
+        accountRepository.saveAll(List.of(senderAccount,beneficiaryAccount));
+        when(accountRepository.findAccountByBankUserId(1)).thenReturn(Optional.of(senderAccount));
+        when(accountRepository.findAccountByBankUserId(2)).thenReturn(Optional.of(beneficiaryAccount));
+
+        Transaction result = userService.createTransferTransaction(1,2,BigDecimal.valueOf(100));
+
+        assertNotNull(result);
+        assertEquals(senderAccount.getBalance(), BigDecimal.valueOf(100));
+        assertEquals(beneficiaryAccount.getBalance(), BigDecimal.valueOf(500));
     }
 
     @Test
