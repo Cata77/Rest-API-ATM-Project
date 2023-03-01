@@ -320,4 +320,12 @@ class UserServiceTest {
         verify(accountRepository,times(1)).delete(any(Account.class));
         verify(transactionRepository,times(1)).deleteAll(anyIterable());
     }
+
+    @Test
+    void shotDownUserBankAccountUserNotFoundException() {
+        when(userRepository.findById(10)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> userService.shotDownUserBankAccount("10"))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessage("User not found!");
+    }
 }
