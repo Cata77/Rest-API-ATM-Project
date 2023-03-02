@@ -46,7 +46,7 @@ The ATM offers three sets of operatons:
  **Observation:** In order for the application flow to run correctly, register the users first.
  
  ## Documentation
- The documentation for each ATM endpoint was done via **Swagger springdoc-openapi** and it can be accessed after running the application at the following
+ The documentation for each ATM endpoint was done via **Swagger springdoc-openapi** and it can be found after running the application at the following
  url ```http://localhost:8080/swagger-ui.html```
  
  ## Technology
