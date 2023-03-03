@@ -45,6 +45,11 @@ The ATM offers three sets of operatons:
   
  **Observation:** In order for the application flow to run correctly, register the users first.
  
+ ## Running App
+Build the project following the ```gradle build``` command.
+
+You can run the application (a REST server) in your IDE by running class ```AtmApplication``` as Java Application or on the command line ```gradlew run```.
+ 
  ## Documentation
  The documentation for each ATM endpoint was done via **Swagger springdoc-openapi** and it can be found after running the application at the following
  url ```http://localhost:8080/swagger-ui.html```
