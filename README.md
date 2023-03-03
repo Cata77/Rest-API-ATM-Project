@@ -48,7 +48,7 @@ The ATM offers three sets of operatons:
  ## Running App
 Build the project following the ```gradle build``` command.
 
-You can run the application (a REST server) in your IDE by running class ```AtmApplication``` as Java Application or on the command line ```gradlew run```.
+You can run the application (a REST server) in your IDE by running class ```AtmApplication``` as Java Application or on the command line ```gradle wrapper run```.
  
  ## Documentation
  The documentation for each ATM endpoint was done via **Swagger springdoc-openapi** and it can be found after running the application at the following
