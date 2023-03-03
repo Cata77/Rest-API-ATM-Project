@@ -38,4 +38,5 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+
 mainClassName = 'com.restapi.atm.AtmApplication'
