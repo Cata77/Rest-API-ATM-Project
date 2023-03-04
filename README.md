@@ -46,7 +46,7 @@ The ATM offers three sets of operatons:
  **Observation:** In order for the application flow to run correctly, register the users first.
  
  ## Running App
-Build the project following the ```gradle build``` command.
+Build the project following the ```./gradlew build``` command.
 
 You can run the application (a REST server) in your IDE by running class ```AtmApplication``` as Java Application or on the command line ```gradle wrapper run```.
  
